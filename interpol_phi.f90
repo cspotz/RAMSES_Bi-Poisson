@@ -86,7 +86,8 @@ subroutine interpol_phi(ind_cell,phi_int,ncell,ilevel,icount)
 
   !------------------------------------------------------------------
   ! 24/02/2020
-  ! I duplicate the routine for the negative mass
+  ! BiP
+  ! I duplicate the routine for the second species
   !------------------------------------------------------------------
 subroutine interpol_phi_m(ind_cell,phi_int,ncell,ilevel,icount)
   use amr_commons
@@ -158,7 +159,7 @@ subroutine interpol_phi_m(ind_cell,phi_int,ncell,ilevel,icount)
            indice=nbors_father_cells(i,ind_father)
            if (indice==0) then
               add=coeff*(phi_m(ind_cell(i))+(phi_m(ind_cell(i))-phi_m_old(ind_cell(i)))*tfrac)
-              ! add=coeff*(3d0/8d0*dx**2*boxlen*rho_m(ind_cell(i))+phi_m(ind_cell(i))) !negative mass
+              ! add=coeff*(3d0/8d0*dx**2*boxlen*rho_m(ind_cell(i))+phi_m(ind_cell(i)))
            else
               add=coeff*(phi_m(indice)+(phi_m(indice)-phi_m_old(indice))*tfrac)
               !add=coeff*(3d0/8d0*dx**2*boxlen*rho_m(indice)+phi_m(indice))
@@ -217,7 +218,8 @@ end subroutine save_phi_old
 
   !------------------------------------------------------------------
   ! 24/02/2020
-  ! I duplicate the routine for the negative mass
+  ! BiP
+  ! I duplicate the routine for the second species
   !------------------------------------------------------------------
 subroutine save_phi_m_old(ilevel)
   use amr_commons

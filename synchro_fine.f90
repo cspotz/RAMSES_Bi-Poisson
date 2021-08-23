@@ -1,6 +1,7 @@
   !------------------------------------------------------------------
   ! 23/01/2020
-  ! I modify the routine for the negative mass
+  ! BiP
+  ! I modify the routine for the second species
   !------------------------------------------------------------------
 subroutine synchro_fine(ilevel)
   use pm_commons
@@ -478,7 +479,7 @@ subroutine sync(ind_grid,ind_part,ind_grid_part,ng,np,ilevel)
   do ind=1,twotondim
      do idim=1,ndim
         do j=1,np
-		if(typep(ind_part(j))%tag==1)then !test if negative mass
+		if(typep(ind_part(j))%tag==1)then !BiP test tag
    		        ff(j,idim)=ff(j,idim)+f_m(indp(j,ind),idim)*vol(j,ind)
 		else if(typep(ind_part(j))%tag==0)then
    		        ff(j,idim)=ff(j,idim)+f(indp(j,ind),idim)*vol(j,ind)

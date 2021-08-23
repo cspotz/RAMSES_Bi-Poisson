@@ -445,7 +445,7 @@ subroutine move1(ind_grid,ind_part,ind_grid_part,ng,np,ilevel)
      do ind=1,twotondim
         do idim=1,ndim
            do j=1,np
-		if(typep(ind_part(j))%tag==1)then !test if negative mass
+		if(typep(ind_part(j))%tag==1)then !BiP test tag
     	          ff(j,idim)=ff(j,idim)+f_m(indp(j,ind),idim)*vol(j,ind) !negative mass
 		else if(typep(ind_part(j))%tag==0)then
 		     ff(j,idim)=ff(j,idim)+f(indp(j,ind),idim)*vol(j,ind) !positive mass
@@ -454,7 +454,7 @@ subroutine move1(ind_grid,ind_part,ind_grid_part,ng,np,ilevel)
         end do
 #ifdef OUTPUT_PARTICLE_POTENTIAL
         do j=1,np
-		if(typep(ind_part(j))%tag==1)then !test if negative mass
+		if(typep(ind_part(j))%tag==1)then !BiP test tag
     	           ptcl_phi(ind_part(j)) = phi_m(indp(j,ind)) !negative mass
 		else if(typep(ind_part(j))%tag==0)then
 		     ptcl_phi(ind_part(j)) = phi(indp(j,ind)) !positive mass
@@ -472,11 +472,7 @@ subroutine move1(ind_grid,ind_part,ind_grid_part,ng,np,ilevel)
         end do
      else
         do j=1,np
-	!	if(10000*abs(vp(ind_part(j),idim))>abs(ff(j,idim)*0.5D0*dtnew(ilevel)))then !21/03/2020 block if velocity gets too large
            new_vp(j,idim)=vp(ind_part(j),idim)+ff(j,idim)*0.5D0*dtnew(ilevel)
-	!	else
-	!  print*, 'velocity increase a lot for particle number', j, 'previous velocity=', vp(ind_part(j),idim), 'new velocity=', ff(j,idim)*0.5D0*dtnew(ilevel)
-	!	end if
         end do
      endif
   end do

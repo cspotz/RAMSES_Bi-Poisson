@@ -7,7 +7,7 @@ subroutine backup_poisson(filename)
 
   integer::i,ivar,ncache,ind,ilevel,igrid,iskip,ilun,istart,ibound
   integer,allocatable,dimension(:)::ind_grid
-  real(dp),allocatable,dimension(:)::xdp,xdp2 !negative force/potential table
+  real(dp),allocatable,dimension(:)::xdp,xdp2 !BiP new force/potential table
   character(LEN=5)::nchar
   character(LEN=80)::fileloc
 
@@ -51,7 +51,7 @@ subroutine backup_poisson(filename)
         write(ilun)ilevel
         write(ilun)ncache
         if(ncache>0)then
-           allocate(ind_grid(1:ncache),xdp(1:ncache),xdp2(1:ncache)) !negative mass
+           allocate(ind_grid(1:ncache),xdp(1:ncache),xdp2(1:ncache)) !BiP
            ! Loop over level grids
            igrid=istart
            do i=1,ncache
@@ -64,7 +64,7 @@ subroutine backup_poisson(filename)
               ! Write potential
               do i=1,ncache
                  xdp(i)=phi(ind_grid(i)+iskip)
-                xdp2(i)=phi_m(ind_grid(i)+iskip) !negative phi
+                xdp2(i)=phi_m(ind_grid(i)+iskip) !BiP second phi
               end do
               write(ilun)xdp
               write(ilun)xdp2
@@ -75,7 +75,7 @@ subroutine backup_poisson(filename)
                  end do
                  write(ilun)xdp
               end do
-              ! Write negative force (after all the ndim component of the force)
+              ! BiP Write second force (after all the ndim component of the force)
               do ivar=1,ndim
                  do i=1,ncache
                     xdp2(i)=f_m(ind_grid(i)+iskip,ivar)
@@ -83,7 +83,7 @@ subroutine backup_poisson(filename)
                  write(ilun)xdp2
               end do
            end do
-           deallocate(ind_grid, xdp,xdp2) !negative mass
+           deallocate(ind_grid, xdp,xdp2) !BiP
         end if
      end do
   end do

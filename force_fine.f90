@@ -4,7 +4,8 @@
 !#########################################################
   !------------------------------------------------------------------
   ! 09/12/2019
-  ! I duplicate the routine for the negative mass
+  ! Stahl 
+  ! I duplicate the routine for the negative mass. All changes are indicated by "BiP"
   !------------------------------------------------------------------
 subroutine force_fine(ilevel,icount)
   use amr_commons
@@ -24,12 +25,12 @@ subroutine force_fine(ilevel,icount)
   integer::igrid,ngrid,ncache,i,ind,iskip,ix,iy,iz
   integer::nx_loc,idim
   real(dp)::dx,dx_loc,scale,fact,fourpi
-  real(kind=8)::rho_loc,rho_all,epot_loc,epot_all,rho_m_loc,rho_m_all,epot_m_loc,epot_m_all
+  real(kind=8)::rho_loc,rho_all,epot_loc,epot_all,rho_m_loc,rho_m_all,epot_m_loc,epot_m_all !BiP
   real(dp),dimension(1:twotondim,1:3)::xc
   real(dp),dimension(1:3)::skip_loc
 
   integer ,dimension(1:nvector),save::ind_grid,ind_cell
-  real(dp),dimension(1:nvector,1:ndim),save::xx,ff,ff2
+  real(dp),dimension(1:nvector,1:ndim),save::xx,ff,ff2 !BiP
 
   if(numbtot(1,ilevel)==0)return
   if(verbose)write(*,111)ilevel
@@ -98,7 +99,7 @@ subroutine force_fine(ilevel,icount)
            do idim=1,ndim
               do i=1,ngrid
                 f(ind_cell(i),idim)=ff(i,idim)
-		f_m(ind_cell(i),idim)=ff2(i,idim) !negative mass
+		f_m(ind_cell(i),idim)=ff2(i,idim) !BiP
               end do
            end do
 
@@ -111,7 +112,7 @@ subroutine force_fine(ilevel,icount)
      ! Update boundaries
      do idim=1,ndim
         call make_virtual_fine_dp(f(1,idim),ilevel)
-        call make_virtual_fine_dp(f_m(1,idim),ilevel) !!negative force
+        call make_virtual_fine_dp(f_m(1,idim),ilevel) !BiP
      end do
      if(simple_boundary)call make_boundary_force(ilevel)
 
@@ -131,7 +132,7 @@ subroutine force_fine(ilevel,icount)
         end do
         ! Compute gradient of potential
         call gradient_phi(ind_grid,ngrid,ilevel,icount)
-        call gradient_phi_m(ind_grid,ngrid,ilevel,icount) !negative mass
+        call gradient_phi_m(ind_grid,ngrid,ilevel,icount) !BiP
      end do
      ! End loop over grids
 
@@ -143,7 +144,7 @@ subroutine force_fine(ilevel,icount)
      ! Update boundaries
      do idim=1,ndim
         call make_virtual_fine_dp(f(1,idim),ilevel) 
-        call make_virtual_fine_dp(f_m(1,idim),ilevel) !negative force
+        call make_virtual_fine_dp(f_m(1,idim),ilevel) !BiP
      end do
      if(simple_boundary)call make_boundary_force(ilevel)
 
@@ -179,14 +180,14 @@ subroutine force_fine(ilevel,icount)
            do i=1,ngrid
               if(son(ind_cell(i))==0)then
                  epot_loc=epot_loc+fact*f(ind_cell(i),idim)**2
-                 epot_m_loc=epot_m_loc+fact*f_m(ind_cell(i),idim)**2 !!negative force
+                 epot_m_loc=epot_m_loc+fact*f_m(ind_cell(i),idim)**2 !BiP
               end if
            end do
         end do
         ! End loop over dimensions
         do i=1,ngrid
            rho_loc=MAX(rho_loc,dble(abs(rho(ind_cell(i)))))
-           rho_m_loc=MAX(rho_m_loc,dble(abs(rho_m(ind_cell(i)))))  !!!!!!! modification due à l'equation de Poisson, remember rho_m>0 (need min ?)
+           rho_m_loc=MAX(rho_m_loc,dble(abs(rho_m(ind_cell(i)))))  !!!!!!!BiP modification due à to coupled Poisson, remember rho_m>0
         end do
      end do
      ! End loop over cells
@@ -196,20 +197,15 @@ subroutine force_fine(ilevel,icount)
 #ifndef WITHOUTMPI
      call MPI_ALLREDUCE(epot_loc,epot_all,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,info)
      call MPI_ALLREDUCE(rho_loc ,rho_all ,1,MPI_DOUBLE_PRECISION,MPI_MAX,MPI_COMM_WORLD,info)
-     call MPI_ALLREDUCE(epot_m_loc,epot_m_all,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,info) !negative mass
+     call MPI_ALLREDUCE(epot_m_loc,epot_m_all,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,info) !BiP
      call MPI_ALLREDUCE(rho_m_loc ,rho_m_all ,1,MPI_DOUBLE_PRECISION,MPI_MAX,MPI_COMM_WORLD,info)
      epot_loc=epot_all
      rho_loc =rho_all
-     epot_m_loc=epot_m_all !negative mass
+     epot_m_loc=epot_m_all !BiP
      rho_m_loc =rho_m_all
 #endif
      epot_tot=epot_tot+epot_loc+epot_m_tot+epot_m_loc
-     rho_max(ilevel)=abs(rho_loc+0*rho_m_loc) !negative mass
-	!   print*, 'cic_levelmax=', cic_levelmax
- 	   print*, 'rho_max=', rho_max(ilevel), 'rho_loc=', rho_loc, 'rho_loc_m=', rho_m_loc
- !    epot_m_tot=epot_m_tot+epot_m_loc !negative mass
- !    rho_m_max(ilevel)=rho_m_loc
-
+     rho_max(ilevel)=abs(rho_loc+0*rho_m_loc) !BiP
 
 111 format('   Entering force_fine for level ',I2)
 
@@ -342,9 +338,6 @@ subroutine gradient_phi(ind_grid,ngrid,ilevel,icount)
         do i=1,ngrid
            f(ind_cell(i),idim)=a*(phi1(i)-phi2(i)) &
                 &             -b*(phi3(i)-phi4(i))
-!		if(f(ind_cell(i),idim)>1) then
-!			print*, 'ind_cell=', ind_cell(i), 'idim=', idim, 'f=', f(ind_cell(i),idim)
-!		endif
         end do
      end do
   end do
@@ -354,6 +347,7 @@ end subroutine gradient_phi
 !#########################################################
 !#########################################################
 !#########################################################
+!All this routine is duplicated (BiP)
 subroutine gradient_phi_m(ind_grid,ngrid,ilevel,icount)
   use amr_commons
   use pm_commons
@@ -475,9 +469,6 @@ subroutine gradient_phi_m(ind_grid,ngrid,ilevel,icount)
         do i=1,ngrid
            f_m(ind_cell(i),idim)=a*(phi1(i)-phi2(i)) &
                 &             -b*(phi3(i)-phi4(i))
-!		if(f_m(ind_cell(i),idim)>1) then
-!			print*, 'ind_cell=', ind_cell(i), 'idim=', idim, 'f_m=', f_m(ind_cell(i),idim)
-!		endif
         end do
      end do
   end do

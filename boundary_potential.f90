@@ -4,11 +4,7 @@
 !################################################################
   !------------------------------------------------------------------
   ! 23/01/2020
-  ! I modify the routines for the negative mass
-  !------------------------------------------------------------------
-  !------------------------------------------------------------------
-  ! 21/02/2020
-  ! Not sure this has to be modified anymore. But I still modify
+  ! BiP : I modify the routines
   !------------------------------------------------------------------
 subroutine make_boundary_force(ilevel)
   use amr_commons
@@ -280,7 +276,7 @@ subroutine make_boundary_phi(ilevel)
            ! Scatter variables
            do i=1,ngrid
               phi(ind_cell(i))=pp(i)/scale
-              phi_m(ind_cell(i))=pp(i)/scale !negative mass
+              phi_m(ind_cell(i))=pp(i)/scale !BiP
            end do
 
         end do
@@ -336,7 +332,7 @@ subroutine make_boundary_mask(ilevel)
            ! Set mask to -1d0
            do i=1,ngrid
               f(ind_cell(i),3)=-1
-              f_m(ind_cell(i),3)=-1 !negative mass
+              f_m(ind_cell(i),3)=-1 !BiP
            end do
 
         end do

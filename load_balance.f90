@@ -104,10 +104,10 @@ subroutine load_balance
 #endif
      if(poisson)then
         call make_virtual_fine_dp(phi(1),ilevel)
-        call make_virtual_fine_dp(phi_m(1),ilevel) !negative mass
+        call make_virtual_fine_dp(phi_m(1),ilevel) !BiP
         do idim=1,ndim
            call make_virtual_fine_dp(f(1,idim),ilevel)
-           call make_virtual_fine_dp(f_m(1,idim),ilevel) !negative mass
+           call make_virtual_fine_dp(f_m(1,idim),ilevel) !BiP
         end do
      end if
   end do
@@ -1441,7 +1441,7 @@ subroutine defrag
   end do
   end do
 
-!!23/03/2020 Duplicate the previous part for negative mass
+!!23/03/2020 BiP Duplicate the previous part
 
   do ind=1,twotondim
   iskip2=ncoarse+(ind-1)*ngridmax
@@ -1461,7 +1461,7 @@ subroutine defrag
         if(ncache>0)then
            igrid=istart
            do i=1,ncache
-              hilbert_key(ngrid2+i)=real(phi_m(iskip2+igrid),kind=qdp) !negative mass
+              hilbert_key(ngrid2+i)=real(phi_m(iskip2+igrid),kind=qdp) !BiP
               igrid=next(igrid)
            end do
            ngrid2=ngrid2+ncache
@@ -1469,7 +1469,7 @@ subroutine defrag
      end do
   end do
   do igrid=1,igridmax
-     phi_m(iskip2+igrid)=real(hilbert_key(igrid),kind=8) !negative mass
+     phi_m(iskip2+igrid)=real(hilbert_key(igrid),kind=8) !BiP
   end do
   end do
 
@@ -1509,7 +1509,7 @@ subroutine defrag
 
 
 
-!!!!!!!!!! 23/03/2020 duplicate the previous part for negative mass
+!!!!!!!!!! 23/03/2020 BiP duplicate the previous part
 
   do idim=1,ndim
   do ind=1,twotondim

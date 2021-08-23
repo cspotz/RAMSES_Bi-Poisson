@@ -863,13 +863,13 @@ subroutine make_grid_fine(ind_grid,ind_cell,ind,ilevel,nn,ibound,boundary_region
            do idim=1,ndim
               do i=1,nn
                  f(iskip+ind_grid_son(i),idim)=f(ind_fathers(i,0),idim)
-		 f_m(iskip+ind_grid_son(i),idim)=f_m(ind_fathers(i,0),idim) !negative mass
+		 f_m(iskip+ind_grid_son(i),idim)=f_m(ind_fathers(i,0),idim) !BiP
               end do
            end do
            do i=1,nn
               phi(iskip+ind_grid_son(i))=phi(ind_fathers(i,0))
               phi_old(iskip+ind_grid_son(i))=phi_old(ind_fathers(i,0))
-              phi_m(iskip+ind_grid_son(i))=phi_m(ind_fathers(i,0)) !negative mass
+              phi_m(iskip+ind_grid_son(i))=phi_m(ind_fathers(i,0)) !BiP
               phi_m_old(iskip+ind_grid_son(i))=phi_m_old(ind_fathers(i,0))
            end do
         end do

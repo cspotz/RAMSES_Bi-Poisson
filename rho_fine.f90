@@ -5,7 +5,7 @@
 !##############################################################################
   !------------------------------------------------------------------
   ! 23/01/2020
-  ! Use the tag to differentiate DM and antiDM
+  ! BiP : Use the tag to differentiate the two species
   !------------------------------------------------------------------
 subroutine rho_fine(ilevel,icount)
   use amr_commons
@@ -68,10 +68,10 @@ subroutine rho_fine(ilevel,icount)
         call cic_from_multipole(i)
 #endif
         ! Update boundaries
-        	call make_virtual_reverse_dp(rho(1),i) ! positive mass
-       		call make_virtual_fine_dp   (rho(1),i) ! positive mass
-        	call make_virtual_reverse_dp(rho_m(1),i) ! negative mass
-        	call make_virtual_fine_dp   (rho_m(1),i) ! negative mass
+        	call make_virtual_reverse_dp(rho(1),i) 
+       		call make_virtual_fine_dp   (rho(1),i) 
+        	call make_virtual_reverse_dp(rho_m(1),i) ! BiP
+        	call make_virtual_fine_dp   (rho_m(1),i) ! BiP
      end do
   end if
 
@@ -82,12 +82,12 @@ subroutine rho_fine(ilevel,icount)
      iskip=ncoarse+(ind-1)*ngridmax
      do i=1,active(ilevel)%ngrid
 	phi(active(ilevel)%igrid(i)+iskip)=0.0D0
-        phi_m(active(ilevel)%igrid(i)+iskip)=0.0D0 !negative mass
+        phi_m(active(ilevel)%igrid(i)+iskip)=0.0D0 !BiP
      end do
      if(ilevel==cic_levelmax)then
         do i=1,active(ilevel)%ngrid
 	   rho_top(active(ilevel)%igrid(i)+iskip)=0.0D0
-           rho_m_top(active(ilevel)%igrid(i)+iskip)=0.0D0 !negative mass
+           rho_m_top(active(ilevel)%igrid(i)+iskip)=0.0D0 !BiP
         end do
      endif
   end do
@@ -98,7 +98,7 @@ subroutine rho_fine(ilevel,icount)
            rho_top(active(ilevel)%igrid(i)+iskip)=rho_top(father(active(ilevel)%igrid(i)))
            rho(active(ilevel)%igrid(i)+iskip)=rho(active(ilevel)%igrid(i)+iskip)+ &
                 & rho_top(active(ilevel)%igrid(i)+iskip)
-           rho_m_top(active(ilevel)%igrid(i)+iskip)=rho_m_top(father(active(ilevel)%igrid(i))) !negative mass
+           rho_m_top(active(ilevel)%igrid(i)+iskip)=rho_m_top(father(active(ilevel)%igrid(i))) !BiP
            rho_m(active(ilevel)%igrid(i)+iskip)=rho_m(active(ilevel)%igrid(i)+iskip)+ &
                 & rho_m_top(active(ilevel)%igrid(i)+iskip)
         end do
@@ -121,7 +121,7 @@ subroutine rho_fine(ilevel,icount)
                     phi(active(ilevel)%igrid(i)+iskip)= &
                          & rho(active(ilevel)%igrid(i)+iskip)/d_scale
                     phi_m(active(ilevel)%igrid(i)+iskip)= &
-                         & rho_m(active(ilevel)%igrid(i)+iskip)/d_scale !negative mass
+                         & rho_m(active(ilevel)%igrid(i)+iskip)/d_scale !BiP
                  endif
               end do
            else
@@ -129,7 +129,7 @@ subroutine rho_fine(ilevel,icount)
                  phi(active(ilevel)%igrid(i)+iskip)= &
                       & rho(active(ilevel)%igrid(i)+iskip)/d_scale
                  phi_m(active(ilevel)%igrid(i)+iskip)= &
-                      & rho_m(active(ilevel)%igrid(i)+iskip)/d_scale !negative mass
+                      & rho_m(active(ilevel)%igrid(i)+iskip)/d_scale !BiP
               end do
            endif
         endif
@@ -145,13 +145,13 @@ subroutine rho_fine(ilevel,icount)
         do i=1,reception(icpu,ilevel)%ngrid
            rho(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0
            phi(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0
-           rho_m(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0 !negative mass
+           rho_m(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0 !BiP
            phi_m(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0
         end do
         if(ilevel==cic_levelmax)then
            do i=1,reception(icpu,ilevel)%ngrid
               rho_top(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0
-              rho_m_top(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0 !negative mass
+              rho_m_top(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0 !BiP
            end do
         endif
      end do
@@ -167,21 +167,21 @@ subroutine rho_fine(ilevel,icount)
   ! Update boudaries
   call make_virtual_reverse_dp(rho(1),ilevel) 
   call make_virtual_fine_dp   (rho(1),ilevel)
-  call make_virtual_reverse_dp(rho_m(1),ilevel) !negative mass
-  call make_virtual_fine_dp   (rho_m(1),ilevel) !negative mass
+  call make_virtual_reverse_dp(rho_m(1),ilevel) !BiP
+  call make_virtual_fine_dp   (rho_m(1),ilevel) !BiP
   if(ilevel==cic_levelmax)then
 	call make_virtual_reverse_dp(rho_top(1),ilevel)     
-	call make_virtual_reverse_dp(rho_m_top(1),ilevel) !negative mass
+	call make_virtual_reverse_dp(rho_m_top(1),ilevel) !BiP
   endif
   if(cic_levelmax>0.and.ilevel>=cic_levelmax)then
      call make_virtual_fine_dp   (rho_top(1),ilevel)
-     call make_virtual_fine_dp   (rho_m_top(1),ilevel) !negative mass
+     call make_virtual_fine_dp   (rho_m_top(1),ilevel) !BiP
   endif
   if(m_refine(ilevel)>-1.0d0)then
      call make_virtual_reverse_dp(phi(1),ilevel)
      call make_virtual_fine_dp   (phi(1),ilevel) 
-     call make_virtual_reverse_dp(phi_m(1),ilevel) !negative mass
-     call make_virtual_fine_dp   (phi_m(1),ilevel) !negative mass
+     call make_virtual_reverse_dp(phi_m(1),ilevel) !BiP
+     call make_virtual_fine_dp   (phi_m(1),ilevel) !BiP
   endif
 
   !--------------------------------------------------------------
@@ -210,8 +210,8 @@ subroutine rho_fine(ilevel,icount)
         do i=1,boundary(ibound,ilevel)%ngrid
            phi(boundary(ibound,ilevel)%igrid(i)+iskip)=0
            rho(boundary(ibound,ilevel)%igrid(i)+iskip)=0
-           phi_m(boundary(ibound,ilevel)%igrid(i)+iskip)=0 !negative mass
-           rho_m(boundary(ibound,ilevel)%igrid(i)+iskip)=0 !negative mass
+           phi_m(boundary(ibound,ilevel)%igrid(i)+iskip)=0 !BiP
+           rho_m(boundary(ibound,ilevel)%igrid(i)+iskip)=0 !BiP
         end do
      end do
   end do
@@ -223,7 +223,7 @@ subroutine rho_fine(ilevel,icount)
      do ind=1,twotondim
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,active(ilevel)%ngrid
-           if(phi(active(ilevel)%igrid(i)+iskip)>=m_refine(ilevel))then !23/01/20 negative mass not taken into account can be improved
+           if(phi(active(ilevel)%igrid(i)+iskip)>=m_refine(ilevel))then
               cpu_map2(active(ilevel)%igrid(i)+iskip)=1
            else
               cpu_map2(active(ilevel)%igrid(i)+iskip)=0
@@ -426,7 +426,7 @@ subroutine cic_amr(ind_cell,ind_part,ind_grid_part,x0,ng,np,ilevel)
      if (is_tracer(fam(j))) then
         mmm(j)=0.0d0
      else
-        mmm(j)=mp(ind_part(j)) !negative mass, nothing change here
+        mmm(j)=mp(ind_part(j)) 
      end if
   end do
 
@@ -596,7 +596,7 @@ subroutine cic_amr(ind_cell,ind_part,ind_grid_part,x0,ng,np,ilevel)
      if(cic_levelmax==0.or.ilevel<=cic_levelmax)then
         do j=1,np
            if(ok(j))then
-		if(typep(ind_part(j))%tag==1)then !test if negative mass
+		if(typep(ind_part(j))%tag==1)then !BiP test tag
 		     rho_m(indp(j,ind))=rho_m(indp(j,ind))+vol2(j)
 		else if(typep(ind_part(j))%tag==0)then
 		     rho(indp(j,ind))=rho(indp(j,ind))+vol2(j)
@@ -607,7 +607,7 @@ subroutine cic_amr(ind_cell,ind_part,ind_grid_part,x0,ng,np,ilevel)
         do j=1,np
            ! check for non-DM (and non-tracer)
            if ( ok(j) .and. is_not_DM(fam(j)) ) then
-		if(typep(ind_part(j))%tag==1)then !test if negative mass
+		if(typep(ind_part(j))%tag==1)then !BiP test tag
 		     rho_m(indp(j,ind))=rho_m(indp(j,ind))+vol2(j)
 		else if(typep(ind_part(j))%tag==0)then
 		     rho(indp(j,ind))=rho(indp(j,ind))+vol2(j)
@@ -621,9 +621,9 @@ subroutine cic_amr(ind_cell,ind_part,ind_grid_part,x0,ng,np,ilevel)
            ! check for DM
            if ( ok(j) .and. is_DM(fam(j)) ) then
 		if(typep(ind_part(j))%tag==1)then
-			rho_m(indp(j,ind))=rho_m(indp(j,ind))+vol2(j) !negative mass
+			rho_m(indp(j,ind))=rho_m(indp(j,ind))+vol2(j) !BiP
 		else if(typep(ind_part(j))%tag==0)then
-			rho(indp(j,ind))=rho(indp(j,ind))+vol2(j) !negative mass
+			rho(indp(j,ind))=rho(indp(j,ind))+vol2(j) !BiP
 		end if
            end if
         end do
@@ -884,7 +884,7 @@ subroutine cic_from_multipole(ilevel)
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,reception(icpu,ilevel)%ngrid
            rho(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0
-           rho_m(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0 !negative mass
+           rho_m(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0 !BiP
         end do
      end do
   end do
@@ -892,7 +892,7 @@ subroutine cic_from_multipole(ilevel)
      iskip=ncoarse+(ind-1)*ngridmax
      do i=1,active(ilevel)%ngrid
         rho(active(ilevel)%igrid(i)+iskip)=0.0D0
-        rho_m(active(ilevel)%igrid(i)+iskip)=0.0D0 !negative mass
+        rho_m(active(ilevel)%igrid(i)+iskip)=0.0D0 !BiP
      end do
   end do
   ! Reset rho in physical boundaries
@@ -901,7 +901,7 @@ subroutine cic_from_multipole(ilevel)
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,boundary(ibound,ilevel)%ngrid
            rho(boundary(ibound,ilevel)%igrid(i)+iskip)=0
-           rho_m(boundary(ibound,ilevel)%igrid(i)+iskip)=0 !negative mass
+           rho_m(boundary(ibound,ilevel)%igrid(i)+iskip)=0 !BiP
         end do
      end do
   end do

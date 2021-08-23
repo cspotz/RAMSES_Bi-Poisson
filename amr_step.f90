@@ -25,15 +25,6 @@ recursive subroutine amr_step(ilevel,icount)
   logical::ok_defrag,output_now_all
   logical,save::first_step=.true.
 
-!print*, 'rho_tot=', rho_tot
-!print*, 'rho=', rho(5)
-!print*, 'rho_m=', rho_m(5)
-
-!print*, 'f=', f(5,1)
-
-!print*, 'phi=', phi
-!print*, 'phi_m=', phi_m
-
 
 
 
@@ -84,10 +75,10 @@ recursive subroutine amr_step(ilevel,icount)
 #endif
               if(poisson)then
                  call make_virtual_fine_dp(phi(1),i)
-		 call make_virtual_fine_dp(phi_m(1),i) !negative mass
+		 call make_virtual_fine_dp(phi_m(1),i) !BiP
                  do idim=1,ndim
                     call make_virtual_fine_dp(f(1,idim),i)
-                    call make_virtual_fine_dp(f_m(1,idim),i) !negative mass
+                    call make_virtual_fine_dp(f_m(1,idim),i) !BiP
                  end do
                  if(simple_boundary)call make_boundary_force(i)
               end if
@@ -212,7 +203,7 @@ recursive subroutine amr_step(ilevel,icount)
                                call timer('poisson','start')
      !save old potential for time-extrapolation at level boundaries
      call save_phi_old(ilevel)
-     call save_phi_m_old(ilevel) !negative mass
+     call save_phi_m_old(ilevel) !BiP
                                call timer('rho','start')
      call rho_fine(ilevel,icount)
   endif
@@ -240,7 +231,7 @@ recursive subroutine amr_step(ilevel,icount)
      endif
 
      ! Compute gravitational potential
-  !   if(ilevel>levelmin)then                      !specific for negative mass
+  !   if(ilevel>levelmin)then                      !specific for BiP
         if(ilevel .ge. cg_levelmin) then
            call phi_fine_cg(ilevel,icount)
            call phi_m_fine_cg(ilevel,icount)
@@ -252,7 +243,7 @@ recursive subroutine amr_step(ilevel,icount)
    !  end if
      !when there is no old potential...
      if (nstep==0)call save_phi_old(ilevel)
-     if (nstep==0)call save_phi_m_old(ilevel) !negative mass
+     if (nstep==0)call save_phi_m_old(ilevel) !BiP
 
      ! Compute gravitational acceleration
      call force_fine(ilevel,icount)

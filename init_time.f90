@@ -69,11 +69,6 @@ subroutine init_time
      texp=t
   end if
 
-print*, 'aexp=',aexp_frw(995:1000)
-!print*,'hexp=',hexp_frw(0:10)
-!print*,'tau_frw=',tau_frw(0:10)
-print*,'t_frw=',t_frw(995:1000)
-
   ! Initialize cooling model
 #ifdef grackle
   if(use_grackle==1)then
@@ -797,17 +792,13 @@ subroutine friedman(O_mat_0,O_vac_0,O_k_0,alpha,axp_min, &
   t = 0.0D0
   nstep = 0
 
-!print*, 'O_mat_0=',O_mat_0,'O_vac_0=',O_vac_0,'O_k_0=',O_k_0
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!For Dirac-Milne : impose Milne background 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!BiP: Specific to Dirac-Milne : impose Milne background 
 
 O_mat_0=0.0
 O_vac_0=0.0d0
 O_k_0=1.0d0
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!For Dirac-Milne : impose Milne background 
-
-!print*, 'O_mat_0=',O_mat_0,'O_vac_0=',O_vac_0,'O_k_0=',O_k_0
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   do while ( (axp_tau .ge. axp_min) .or. (axp_t .ge. axp_min) )
 

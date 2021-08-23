@@ -40,29 +40,25 @@ subroutine newdt_fine(ilevel)
 
 courant_factor=0.15
 
-print*, 'dtnew(ilevel)=',dtnew(ilevel) !Clément
   ! Save old time step
   dtold(ilevel)=dtnew(ilevel)
 
   ! Maximum time step
   dtnew(ilevel)=boxlen/smallc
-print*, 'dtnew(boxlen/c)=',dtnew(ilevel) !Clément
   if(poisson.and.gravity_type<=0)then
      fourpi=4.0d0*pi
-     if(cosmo)fourpi=1.5d0*omega_m*aexp !Clément Dirac-Milne
+     if(cosmo)fourpi=1.5d0*omega_m*aexp
      if (sink)then
         tff=sqrt(threepi2/8/fourpi/(rho_max(ilevel)+rho_sink_tff(ilevel)))
      else
         tff=sqrt(threepi2/8/fourpi/(rho_max(ilevel)+smallr))
      end if
      dtnew(ilevel)=MIN(dtnew(ilevel),courant_factor*tff)
-print*, 'dtnew(courantfacrot*ff)=',dtnew(ilevel), 'courant_factor=',courant_factor,'tff=',tff , rho_max(ilevel) !Clément
   end if
   if(cosmo)then
      dtnew(ilevel)=MIN(dtnew(ilevel),0.1d0/hexp)
   end if
 
-print*, 'dtnew(0.1/h)=',dtnew(ilevel) !Clément
 
 
 #ifdef ATON
@@ -85,7 +81,6 @@ print*, 'dtnew(0.1/h)=',dtnew(ilevel) !Clément
   endif
 #endif
 
-print*, 'dtnew(RT)=',dtnew(ilevel) !Clément
 
   if(pic) then
 
@@ -133,11 +128,9 @@ print*, 'dtnew(RT)=',dtnew(ilevel) !Clément
      ekin_tot=ekin_tot+ekin_all
      dtnew(ilevel)=MIN(dtnew(ilevel),dt_all)
 
-print*, 'dtnew(dt_all)=',dtnew(ilevel) !Clément
 
   end if
 
-print*, 'dtnew(ilevel)=', dtnew(ilevel)
 
   if(hydro)call courant_fine(ilevel)
 

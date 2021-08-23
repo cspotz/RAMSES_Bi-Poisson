@@ -29,9 +29,9 @@
   integer,allocatable,dimension(:)::isp
   integer(i8b),allocatable,dimension(:)::isp8
   integer(1),allocatable,dimension(:)::ii1
-  real(kind=4),allocatable,dimension(:,:)::init_plane,init_plane2,init_plane_x,init_plane_x2
+  real(kind=4),allocatable,dimension(:,:)::init_plane,init_plane2,init_plane_x,init_plane_x2 !BiP
   integer(i8b),allocatable,dimension(:,:)::init_plane_id
-  real(dp),allocatable,dimension(:,:,:)::init_array,init_array2,init_array_x,init_array_x2
+  real(dp),allocatable,dimension(:,:,:)::init_array,init_array2,init_array_x,init_array_x2 !BiP
   integer(i8b),allocatable,dimension(:,:,:)::init_array_id
   real(kind=8),dimension(1:nvector,1:3)::xx,vv
   real(kind=8),dimension(1:nvector)::mm
@@ -49,7 +49,7 @@
   integer,parameter::tagg=1109,tagg2=1110,tagg3=1111
 #endif
   logical::error,keep_part,eof,read_pos=.false.,ok,read_ids=.false.
-  character(LEN=80)::filename, filename2,filename_x,filename_x2, filename_id
+  character(LEN=80)::filename, filename2,filename_x,filename_x2, filename_id!BiP
   character(LEN=80)::fileloc
   character(LEN=20)::filetype_loc
   character(LEN=5)::nchar,ncharcpu
@@ -67,7 +67,7 @@
   ! Allocate particle variables
   allocate(xp    (npartmax,ndim))
   allocate(vp    (npartmax,ndim))
-  allocate(vp2    (npartmax,ndim)) !just for this routine a new (anti)particle velocity 
+  allocate(vp2    (npartmax,ndim)) !BiP just for this routine a new (anti)particle velocity 
   allocate(mp    (npartmax))
   allocate(nextp (npartmax))
   allocate(prevp (npartmax))
@@ -373,18 +373,18 @@ contains
        ! Allocate initial conditions array
        if(active(ilevel)%ngrid>0)then
           allocate(init_array(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max))
-          allocate(init_array2(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max)) !array for velocity of antidarkmatter
+          allocate(init_array2(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max)) !BiP array for velocity of antidarkmatter
           allocate(init_array_x(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max))
-          allocate(init_array_x2(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max)) !array for position of antidarkmatter
+          allocate(init_array_x2(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max)) !BiP array for position of antidarkmatter
           init_array=0d0
           init_array2=0d0
           init_array_x=0d0
           init_array_x2=0d0
        end if
        allocate(init_plane(1:n1(ilevel),1:n2(ilevel)))
-       allocate(init_plane2(1:n1(ilevel),1:n2(ilevel))) !array for antidarkmatter
+       allocate(init_plane2(1:n1(ilevel),1:n2(ilevel))) !BiP array for antidarkmatter
        allocate(init_plane_x(1:n1(ilevel),1:n2(ilevel)))
-       allocate(init_plane_x2(1:n1(ilevel),1:n2(ilevel))) !array for antidarkmatter
+       allocate(init_plane_x2(1:n1(ilevel),1:n2(ilevel))) !BiP array for antidarkmatter
 
        filename_id=TRIM(initfile(ilevel))//'/ic_particle_ids'
        INQUIRE(file=filename_id,exist=read_ids)
@@ -409,16 +409,16 @@ contains
              if(idim==2)filename=TRIM(initfile(ilevel))//'/ic_velcy'
              if(idim==3)filename=TRIM(initfile(ilevel))//'/ic_velcz'
 
-          !   if(idim==1)filename2=TRIM(initfile(ilevel))//'/ic_velcx2' !velocity of antidark matter
-          !   if(idim==2)filename2=TRIM(initfile(ilevel))//'/ic_velcy2' !velocity of antidark matter
-          !   if(idim==3)filename2=TRIM(initfile(ilevel))//'/ic_velcz2' !velocity of antidark matter
+          !BiP   if(idim==1)filename2=TRIM(initfile(ilevel))//'/ic_velcx2' !velocity of antidark matter
+          !BiP   if(idim==2)filename2=TRIM(initfile(ilevel))//'/ic_velcy2' !velocity of antidark matter
+          !BiP   if(idim==3)filename2=TRIM(initfile(ilevel))//'/ic_velcz2' !velocity of antidark matter
 
 
              if(idim==1)filename_x=TRIM(initfile(ilevel))//'/ic_poscx'
              if(idim==2)filename_x=TRIM(initfile(ilevel))//'/ic_poscy'
              if(idim==3)filename_x=TRIM(initfile(ilevel))//'/ic_poscz'
 
-             if(idim==1)filename_x2=TRIM(initfile(ilevel))//'/mass' ! Nouveauté pour Dirac-Milne. Lecture d'un fichier masque pour les masses.
+             if(idim==1)filename_x2=TRIM(initfile(ilevel))//'/mass' !BiP For the specific case of Dirac-Milne. File of "mask" for the repartition of the two species (negative and positive mass). dubbed thereafter the "mass file"
 
              INQUIRE(file=filename_x,exist=ok)
              if(.not.ok)then
@@ -471,7 +471,7 @@ contains
                 open(10,file=filename,form='unformatted')
                 rewind 10
                 read(10) ! skip first line
-          !      open(11,file=filename2,form='unformatted') !file of the antidark matter
+          !      open(11,file=filename2,form='unformatted') ! BiP file of the antidark matter
           !      rewind 11
           !      read(11) ! skip first line
              end if
@@ -507,7 +507,7 @@ contains
                    open(10,file=filename_x,form='unformatted')
                    rewind 10
                    read(10) ! skip first line
-                   if(idim==1)open(11,file=filename_x2,form='unformatted') !reading of the mass file
+                   if(idim==1)open(11,file=filename_x2,form='unformatted') !BiP reading of the mass file
                    if(idim==1)rewind 11
                    if(idim==1)read(11) ! skip first line
                 end if
@@ -529,7 +529,7 @@ contains
                       if(i3.ge.i3_min.and.i3.le.i3_max)then
                          init_array_x(i1_min:i1_max,i2_min:i2_max,i3) = &
                               & init_plane_x(i1_min:i1_max,i2_min:i2_max)
-                         if(idim==1)init_array_x2(i1_min:i1_max,i2_min:i2_max,i3) = &   !mass mask
+                         if(idim==1)init_array_x2(i1_min:i1_max,i2_min:i2_max,i3) = &   !BiP mass file
                               & init_plane_x2(i1_min:i1_max,i2_min:i2_max)
                       end if
                    endif
@@ -607,7 +607,7 @@ contains
                       keep_part=son(ind_cell(i))==0
                       if(keep_part)then
                          ipart=ipart+1
-				if(init_array_x2(i1,i2,i3)==0)then                               !current setup for Dirac-Milne
+				if(init_array_x2(i1,i2,i3)==0)then                               !BiP current setup for Dirac-Milne
                          		vp(ipart,idim)=init_array(i1,i2,i3)
 					typep(ipart)%family = FAM_DM
 					typep(ipart)%tag =1
@@ -616,14 +616,14 @@ contains
 				
 				else
 					!if(init_array_x2(i1,i2,i3)==0)then                               
-                         			vp(ipart,idim)=init_array(i1,i2,i3) !TO be changed if different velocities init_array2(i1,i2,i3)
+                         			vp(ipart,idim)=init_array(i1,i2,i3) !BiP TO be changed if different velocities init_array2(i1,i2,i3)
 						!vp(ipart,idim)=0
 						typep(ipart)%family = FAM_DM
 						typep(ipart)%tag = 0
 			 		!else 
 						!vp(ipart,idim)=init_array2(i1,i2,i3)
 						!vp(ipart,idim)=0
-						!mp(ipart)=0                                  !achtung we are inside a ndim loop
+						!mp(ipart)=0                                
 						!typep(ipart)%family = FAM_DM
 						!typep(ipart)%tag = 0
 					!endif
@@ -669,14 +669,6 @@ contains
 
     ! Initial particle number
     npart=ipart
-   ! mp(npart+1:2*npart)=mp(1:npart) !initial antimass (same as matter)
-   ! xp(npart+1:2*npart,1)=xp(1:npart,1) !Initial particle position for antimatter (same as matter)
-   ! xp(npart+1:2*npart,2)=xp(1:npart,2)
-   ! xp(npart+1:2*npart,3)=xp(1:npart,3)
-   ! vp(npart+1:2*npart,1)=vp2(1:npart,1) 
-   ! vp(npart+1:2*npart,2)=vp2(1:npart,2)
-   ! vp(npart+1:2*npart,3)=vp2(1:npart,3)
-   ! npart =2*npart
 
     ! Move particle according to Zeldovich approximation
     if(.not. read_pos)then
@@ -869,7 +861,7 @@ contains
           vp(jpart,3)=reception(icpu,1)%up(ibuf,6)
           mp(jpart)  =reception(icpu,1)%up(ibuf,7)
           idp(jpart)  =reception(icpu,1)%fp(ibuf,2)
-          typep(jpart) =int2part(reception(icpu,1)%fp(ibuf,1)) ! 10/03/2020 !! modification to keep track of type
+          typep(jpart) =int2part(reception(icpu,1)%fp(ibuf,1)) !BiP 10/03/2020 !! modification to keep track of type
        end do
     end do
 

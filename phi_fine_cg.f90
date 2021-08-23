@@ -66,7 +66,7 @@ subroutine phi_fine_cg(ilevel,icount)
      iskip=ncoarse+(ind-1)*ngridmax
      do i=1,active(ilevel)%ngrid
         idx=active(ilevel)%igrid(i)+iskip
-        rhs_norm=rhs_norm+fact2*(rho(idx)-0*rho_tot-(rho_m(idx)-0*rho_tot))*(rho(idx)-0*rho_tot-(rho_m(idx)-0*rho_tot)) !Poisson equation gets modified
+        rhs_norm=rhs_norm+fact2*(rho(idx)-0*rho_tot-(rho_m(idx)-0*rho_tot))*(rho(idx)-0*rho_tot-(rho_m(idx)-0*rho_tot)) !BiP : Poisson equation gets modified. Set "by hand" rho_tot=0.
      end do
   end do
   ! Compute global norms
@@ -318,7 +318,7 @@ subroutine cmp_residual_cg(ilevel,icount)
            end do
         end do
         do i=1,ngrid
-           residu(i)=residu(i)+fact*(rho(ind_cell(i))-0*rho_tot-(rho_m(ind_cell(i))-0*rho_tot)) !negative mass ?
+           residu(i)=residu(i)+fact*(rho(ind_cell(i))-0*rho_tot-(rho_m(ind_cell(i))-0*rho_tot)) !BiP. Set by hand rho_tot=0
         end do
 
         ! Store results in f(i,1)
@@ -636,8 +636,6 @@ end subroutine make_multipole_phi
 !###########################################################
 !###########################################################
 
-!24/01/20 Would be better in a new file phi_fine_cg_m.f90 but but I put it here for the time being
-
 !###########################################################
 !###########################################################
 !###########################################################
@@ -649,7 +647,7 @@ end subroutine make_multipole_phi
 !###########################################################
   !------------------------------------------------------------------
   ! 23/01/2020
-  ! I duplicate the routine for the negative mass
+  ! I duplicate the routine for BiP
   !------------------------------------------------------------------
 subroutine phi_m_fine_cg(ilevel,icount)
   use amr_commons
@@ -715,7 +713,7 @@ subroutine phi_m_fine_cg(ilevel,icount)
      iskip=ncoarse+(ind-1)*ngridmax
      do i=1,active(ilevel)%ngrid
         idx=active(ilevel)%igrid(i)+iskip
-        rhs_norm=rhs_norm+fact2*(rho(idx)-0*rho_tot+(rho_m(idx)-0*rho_tot))*(rho(idx)-0*rho_tot+(rho_m(idx)-0*rho_tot)) ! Here the Poisson equation is modified. Also positive mass contributes. 
+        rhs_norm=rhs_norm+fact2*(rho(idx)-0*rho_tot+(rho_m(idx)-0*rho_tot))*(rho(idx)-0*rho_tot+(rho_m(idx)-0*rho_tot)) ! BiP Modification of Poisson equation here. Also positive mass contributes. 
      end do
   end do
   ! Compute global norms
@@ -730,7 +728,7 @@ subroutine phi_m_fine_cg(ilevel,icount)
   ! Compute r = b - Ax and store it into f(i,1)
   ! Also set p = r and store it into f(i,2)
   !==============================================
-  call cmp_residual_cg_m(ilevel,icount) ! This routine also will be duplicated
+  call cmp_residual_cg_m(ilevel,icount) !BiP  This routine also will be duplicated
 
   !====================================
   ! Main iteration loop
@@ -749,7 +747,7 @@ subroutine phi_m_fine_cg(ilevel,icount)
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,active(ilevel)%ngrid
            idx=active(ilevel)%igrid(i)+iskip
-           r2=r2+f_m(idx,1)*f_m(idx,1) !here one stores also in f_m
+           r2=r2+f_m(idx,1)*f_m(idx,1) !BiP here one stores also in f_m
         end do
      end do
      ! Compute global norm
@@ -776,7 +774,7 @@ subroutine phi_m_fine_cg(ilevel,icount)
         iskip=ncoarse+(ind-1)*ngridmax
         do i=1,active(ilevel)%ngrid
            idx=active(ilevel)%igrid(i)+iskip
-           f_m(idx,2)=f_m(idx,1)+beta_cg*f_m(idx,2) !should not change but I put in negative mass container
+           f_m(idx,2)=f_m(idx,1)+beta_cg*f_m(idx,2) !BiP
         end do
      end do
      ! Update boundaries
@@ -859,7 +857,8 @@ end subroutine phi_m_fine_cg
 !###########################################################
   !------------------------------------------------------------------
   ! 10/12/2019
-  ! I duplicate the routine for the negative mass
+  ! BiP
+  ! I duplicate the routine
   !------------------------------------------------------------------
 subroutine cmp_residual_cg_m(ilevel,icount)
   use amr_commons
@@ -938,7 +937,7 @@ subroutine cmp_residual_cg_m(ilevel,icount)
            ih1=ncoarse+(id1-1)*ngridmax
            do i=1,ngrid
               if(igridn(i,ig1)>0)then
-                 phig(i,idim)=phi_m(igridn(i,ig1)+ih1) ! negative mass phi
+                 phig(i,idim)=phi_m(igridn(i,ig1)+ih1) !BiP negative mass phi
               else
                  phig(i,idim)=phi_left(i,id1,idim)
               end if
@@ -947,7 +946,7 @@ subroutine cmp_residual_cg_m(ilevel,icount)
            ih2=ncoarse+(id2-1)*ngridmax
            do i=1,ngrid
               if(igridn(i,ig2)>0)then
-                 phid(i,idim)=phi_m(igridn(i,ig2)+ih2) ! negative mass phi
+                 phid(i,idim)=phi_m(igridn(i,ig2)+ih2) !BiP negative mass phi
               else
                  phid(i,idim)=phi_right(i,id2,idim)
               end if
@@ -962,7 +961,7 @@ subroutine cmp_residual_cg_m(ilevel,icount)
 
         ! Compute residual using 6 neighbors potential
         do i=1,ngrid
-           residu(i)=phi_m(ind_cell(i)) ! negative mass phi
+           residu(i)=phi_m(ind_cell(i)) !BiP negative mass phi
         end do
         do idim=1,ndim
            do i=1,ngrid
@@ -970,12 +969,12 @@ subroutine cmp_residual_cg_m(ilevel,icount)
            end do
         end do
         do i=1,ngrid
-           residu(i)=residu(i)-fact*(rho_m(ind_cell(i))-0*rho_tot)-fact*(rho(ind_cell(i))-0*rho_tot) ! negtive rho, the residutes get modified due to modified Poisson equation, to be checked.
+           residu(i)=residu(i)-fact*(rho_m(ind_cell(i))-0*rho_tot)-fact*(rho(ind_cell(i))-0*rho_tot) !BiP negtive rho, the residutes get modified due to modified Poisson equation.
         end do
 
         ! Store results in f(i,1)
         do i=1,ngrid
-           f_m(ind_cell(i),1)=residu(i) ! just a container, no need to modify for negative mass ; I modify just to check all goes goods
+           f_m(ind_cell(i),1)=residu(i) !BiP
         end do
 
         ! Store results in f(i,2)
@@ -1104,7 +1103,7 @@ end subroutine cmp_Ap_cg_m
 !###########################################################
   !------------------------------------------------------------------
   ! 09/12/2019
-  ! I duplicate the routine for the negative mass
+  ! BiP I duplicate the routine
   !------------------------------------------------------------------
 subroutine make_initial_phi_m(ilevel,icount)
   use amr_commons
@@ -1140,7 +1139,7 @@ subroutine make_initial_phi_m(ilevel,icount)
            end do
            do idim=1,ndim
               do i=1,ngrid
-                 f_m(ind_cell(i),idim)=0 !is this force ?
+                 f_m(ind_cell(i),idim)=0 !BiP
               end do
            end do
         end do
@@ -1165,7 +1164,7 @@ subroutine make_initial_phi_m(ilevel,icount)
            end do
            do idim=1,ndim
               do i=1,ngrid
-                 f_m(ind_cell(i),idim)=0 !is this force ?
+                 f_m(ind_cell(i),idim)=0 !BiP
               end do
            end do
         end do
@@ -1182,7 +1181,8 @@ end subroutine make_initial_phi_m
 !###########################################################
   !------------------------------------------------------------------
   ! 10/12/2019
-  ! I duplicate the routine for the negative mass
+  ! BiP 
+  ! I duplicate the routine
   !------------------------------------------------------------------
 
 subroutine make_multipole_phi_m(ilevel)

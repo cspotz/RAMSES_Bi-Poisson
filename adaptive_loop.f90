@@ -80,7 +80,7 @@ subroutine adaptive_loop
      if(verbose)write(*,*)'Entering amr_step_coarse'
 
      epot_tot=0.0D0  ! Reset total potential energy
-     epot_m_tot=0.0D0  ! Reset total negative potential energy
+     epot_m_tot=0.0D0  ! BiP Reset total second potential energy
      ekin_tot=0.0D0  ! Reset total kinetic energy
      mass_tot=0.0D0  ! Reset total mass
      eint_tot=0.0D0  ! Reset total internal energy
@@ -119,10 +119,10 @@ subroutine adaptive_loop
 #endif
            if(poisson)then
               call make_virtual_fine_dp(phi(1),ilevel)
-              call make_virtual_fine_dp(phi_m(1),ilevel)
+              call make_virtual_fine_dp(phi_m(1),ilevel) !BiP
               do idim=1,ndim
                  call make_virtual_fine_dp(f(1,idim),ilevel)
-                 call make_virtual_fine_dp(f_m(1,idim),ilevel)
+                 call make_virtual_fine_dp(f_m(1,idim),ilevel) !BiP
               end do
            end if
            if(ilevel<levelmin)call refine_fine(ilevel)
@@ -164,10 +164,10 @@ subroutine adaptive_loop
 #endif
            ! Gravity book-keeping
            if(poisson)then
-              call make_virtual_fine_dp(phi_m(1),ilevel)
+              call make_virtual_fine_dp(phi_m(1),ilevel) !BiP
               call make_virtual_fine_dp(phi(1),ilevel)
               do idim=1,ndim
-                 call make_virtual_fine_dp(f_m(1,idim),ilevel)
+                 call make_virtual_fine_dp(f_m(1,idim),ilevel) !BiP
                  call make_virtual_fine_dp(f(1,idim),ilevel)
               end do
            end if

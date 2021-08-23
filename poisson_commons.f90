@@ -10,11 +10,11 @@ module poisson_commons
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  real(dp),allocatable,dimension(:)  ::phi_m,phi_m_old       ! Potential "negative mass"
-  real(dp),allocatable,dimension(:)  ::rho_m                 ! Density "negative mass"
-  real(dp),allocatable,dimension(:,:)::f_m                   ! 3-force "negative mass"
+  real(dp),allocatable,dimension(:)  ::phi_m,phi_m_old       ! BiP Potential2
+  real(dp),allocatable,dimension(:)  ::rho_m                 ! BiP Density2
+  real(dp),allocatable,dimension(:,:)::f_m                   ! BiP 3-force2
 
-  real(dp),allocatable,dimension(:)  ::rho_m_top   ! Density at last CIC level "negative mass"
+  real(dp),allocatable,dimension(:)  ::rho_m_top   ! BiP Density at last CIC level2
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   ! Multigrid lookup table for amr -> mg index mapping

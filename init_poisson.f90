@@ -128,7 +128,7 @@ subroutine init_poisson
                  read(ilun)xx2
                  do i=1,ncache
                     phi(ind_grid(i)+iskip)=xx(i)
-		    phi_m(ind_grid(i)+iskip)=xx2(i)   !!! negative mass
+		    phi_m(ind_grid(i)+iskip)=xx2(i)   !BiP
                  end do
                  ! Read force
                  do ivar=1,ndim
@@ -141,7 +141,7 @@ subroutine init_poisson
                  do ivar=1,ndim
                     read(ilun)xx2
                     do i=1,ncache
-                       f_m(ind_grid(i)+iskip,ivar)=xx2(i)
+                       f_m(ind_grid(i)+iskip,ivar)=xx2(i) !BiP
                     end do
                  end do
               end do
