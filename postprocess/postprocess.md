@@ -8,7 +8,7 @@ Here is an example of loops in batch:
 ```for i in {1..188}; do cp output_00$i/info_00$i.txt info ; done ;```
 
 ## Generating random points on a sphere
-Naive implementation to generate points on a sphere may lead to wrong results (eg. https://mathworld.wolfram.com/SpherePointPicking.html). Here is my implementation to generate ``npart`` point of a unit 3-sphere in Mathematica:
+Naive implementation to generate points on a sphere may lead to wrong results (eg. https://mathworld.wolfram.com/SpherePointPicking.html). Here is my implementation to generate ``npart=10`` point of a unit 3-sphere in Mathematica:
 ```
 npart = 10;
 tab = ParallelTable[0, {i, npart + 1}, {j, 3}];
