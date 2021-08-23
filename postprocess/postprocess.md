@@ -1,6 +1,6 @@
 # Postprocess RAMSES outputs
 
-Here I store some snipet of code that I have found useful in the past:
+Here I store some snipets of code that I have found useful in the past:
 
 ## Loops in batch
 Here is an example of loops in batch:
