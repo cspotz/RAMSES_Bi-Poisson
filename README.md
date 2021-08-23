@@ -13,7 +13,7 @@ For the specific case of the "Dirac-Milne" universe, we studied the following eq
 
 <img src="https://latex.codecogs.com/svg.latex?\Delta&space;\phi_2=&space;4&space;\pi&space;G&space;(-\rho_1-\rho_2)" title="\Delta \phi_2= 4 \pi G (-\rho_1-\rho_2)" />
 
-More details can be found in [https://arxiv.org/abs/2102.08834]
+More details can be found in https://arxiv.org/abs/2102.08834.
 
 In order to run the code, one needs to provide initial conditions for this specific dynamics, to do so, one needs to tell the code to which species each particle belong. This is achieved by using a "mask", that is provided by the user in addition to the usual initial conditions (generated for instance with [MUSIC](https://www-n.oca.eu/ohahn/MUSIC/)). The mask is a fortran cube with has the same form as the other input. It however contains only 0 or 1 (first or second species). More details how RAMSES reads that mask can be seen around line 510 of ``init_part.f90``.
 
