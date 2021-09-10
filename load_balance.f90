@@ -8,7 +8,7 @@ subroutine load_balance
   use hydro_commons, ONLY: nvar
 #ifndef WITHOUTMPI
   use hydro_commons, ONLY: uold, pstarold
-  use poisson_commons, ONLY: phi, f, phi_m, f_m
+  use poisson_commons, ONLY: phi, f, phi_m, f_m !BiP
 #ifdef RT
   use rt_hydro_commons, ONLY: nrtvar, rtuold
 #endif
@@ -1473,7 +1473,7 @@ subroutine defrag
   end do
   end do
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! BiP
 
   do idim=1,ndim
   do ind=1,twotondim
@@ -1542,7 +1542,7 @@ subroutine defrag
   end do
   end do
   end do
-!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!! BiP
 
   end if
 

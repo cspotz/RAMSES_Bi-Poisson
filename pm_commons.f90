@@ -42,7 +42,7 @@ module pm_commons
   ! Particles related arrays
   real(dp),allocatable,dimension(:,:)  ::xp       ! Positions
   real(dp),allocatable,dimension(:,:)  ::vp       ! Velocities 
-  real(dp),allocatable,dimension(:,:)  ::vp2      ! BiP Velocities of antidarkmatter only used for initialization
+  real(dp),allocatable,dimension(:,:)  ::vp2      ! BiP Velocities of second species only used for initialization
   real(dp),allocatable,dimension(:)    ::mp       ! Masses
 #ifdef OUTPUT_PARTICLE_POTENTIAL
   real(dp),allocatable,dimension(:)    ::ptcl_phi ! Potential of particle added by AP for output purposes

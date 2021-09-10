@@ -12,7 +12,7 @@ subroutine init_poisson
   integer::ilevel2,numbl2,ilun,ibound,istart
   integer::ncpu2,ndim2,nlevelmax2,nboundary2
   integer ,dimension(:),allocatable::ind_grid
-  real(dp),dimension(:),allocatable::xx,xx2
+  real(dp),dimension(:),allocatable::xx,xx2 !BiP
   character(LEN=80)::fileloc
   character(LEN=5)::nchar,ncharcpu
 
@@ -27,14 +27,14 @@ subroutine init_poisson
   allocate(phi_old (1:ncell))
   allocate(f   (1:ncell,1:3))
   allocate(rho_m (1:ncell)) !new variable for second poisson equation
-  allocate(phi_m (1:ncell))
-  allocate(phi_m_old (1:ncell))
-  allocate(f_m   (1:ncell,1:3))
+  allocate(phi_m (1:ncell)) !BiP
+  allocate(phi_m_old (1:ncell)) !BiP
+  allocate(f_m   (1:ncell,1:3)) !BiP
   rho=0; phi=0; f=0; rho_m=0; phi_m=0; f_m=0 !initialize variables to zero
   if(cic_levelmax>0)then
      allocate(rho_top(1:ncell))
      allocate(rho_m_top(1:ncell))
-     rho_top=0; rho_m_top=0
+     rho_top=0; rho_m_top=0 !BiP
   endif
 
   !------------------------------------------------------
@@ -113,6 +113,7 @@ subroutine init_poisson
            if(ncache>0)then
               allocate(ind_grid(1:ncache))
               allocate(xx(1:ncache))
+              allocate(xx2(1:ncache)) !BiP
               ! Loop over level grids
               igrid=istart
               do i=1,ncache
@@ -124,7 +125,7 @@ subroutine init_poisson
                  iskip=ncoarse+(ind-1)*ngridmax
                  ! Read potential
                  read(ilun)xx
-		 ! Read negative potential
+		 ! Read second potential
                  read(ilun)xx2
                  do i=1,ncache
                     phi(ind_grid(i)+iskip)=xx(i)
@@ -137,7 +138,7 @@ subroutine init_poisson
                        f(ind_grid(i)+iskip,ivar)=xx(i)
                     end do
                  end do
-                 ! Read negative force
+                 ! Read second force
                  do ivar=1,ndim
                     read(ilun)xx2
                     do i=1,ncache
@@ -145,7 +146,7 @@ subroutine init_poisson
                     end do
                  end do
               end do
-              deallocate(ind_grid,xx,xx2)
+              deallocate(ind_grid,xx,xx2) !BiP
            end if
         end do
      end do

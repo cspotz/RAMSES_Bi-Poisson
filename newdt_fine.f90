@@ -38,8 +38,6 @@ subroutine newdt_fine(ilevel)
 
   threepi2=3.0d0*pi**2
 
-courant_factor=0.15
-
   ! Save old time step
   dtold(ilevel)=dtnew(ilevel)
 

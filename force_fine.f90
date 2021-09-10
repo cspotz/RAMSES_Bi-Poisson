@@ -5,7 +5,7 @@
   !------------------------------------------------------------------
   ! 09/12/2019
   ! Stahl 
-  ! I duplicate the routine for the negative mass. All changes are indicated by "BiP"
+  ! I duplicate the routine for the second species. All changes are indicated by "BiP"
   !------------------------------------------------------------------
 subroutine force_fine(ilevel,icount)
   use amr_commons
@@ -187,7 +187,7 @@ subroutine force_fine(ilevel,icount)
         ! End loop over dimensions
         do i=1,ngrid
            rho_loc=MAX(rho_loc,dble(abs(rho(ind_cell(i)))))
-           rho_m_loc=MAX(rho_m_loc,dble(abs(rho_m(ind_cell(i)))))  !!!!!!!BiP modification due à to coupled Poisson, remember rho_m>0
+           rho_m_loc=MAX(rho_m_loc,dble(abs(rho_m(ind_cell(i)))))  !!!!!!!BiP modification due to coupled Poisson equations, remember rho_m>0
         end do
      end do
      ! End loop over cells
@@ -468,7 +468,7 @@ subroutine gradient_phi_m(ind_grid,ngrid,ilevel,icount)
         end do
         do i=1,ngrid
            f_m(ind_cell(i),idim)=a*(phi1(i)-phi2(i)) &
-                &             -b*(phi3(i)-phi4(i))
+                &             -b*(phi3(i)-phi4(i)) !BiP
         end do
      end do
   end do

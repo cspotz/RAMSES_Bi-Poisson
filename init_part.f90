@@ -67,7 +67,7 @@
   ! Allocate particle variables
   allocate(xp    (npartmax,ndim))
   allocate(vp    (npartmax,ndim))
-  allocate(vp2    (npartmax,ndim)) !BiP just for this routine a new (anti)particle velocity 
+  allocate(vp2    (npartmax,ndim)) !BiP second particle velocity 
   allocate(mp    (npartmax))
   allocate(nextp (npartmax))
   allocate(prevp (npartmax))
@@ -373,18 +373,18 @@ contains
        ! Allocate initial conditions array
        if(active(ilevel)%ngrid>0)then
           allocate(init_array(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max))
-          allocate(init_array2(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max)) !BiP array for velocity of antidarkmatter
+          allocate(init_array2(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max)) !BiP array for velocity of second species
           allocate(init_array_x(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max))
-          allocate(init_array_x2(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max)) !BiP array for position of antidarkmatter
+          allocate(init_array_x2(i1_min:i1_max,i2_min:i2_max,i3_min:i3_max)) !BiP array for position of second species
           init_array=0d0
           init_array2=0d0
           init_array_x=0d0
           init_array_x2=0d0
        end if
        allocate(init_plane(1:n1(ilevel),1:n2(ilevel)))
-       allocate(init_plane2(1:n1(ilevel),1:n2(ilevel))) !BiP array for antidarkmatter
+       allocate(init_plane2(1:n1(ilevel),1:n2(ilevel))) !BiP array for second species
        allocate(init_plane_x(1:n1(ilevel),1:n2(ilevel)))
-       allocate(init_plane_x2(1:n1(ilevel),1:n2(ilevel))) !BiP array for antidarkmatter
+       allocate(init_plane_x2(1:n1(ilevel),1:n2(ilevel))) !BiP array for second species
 
        filename_id=TRIM(initfile(ilevel))//'/ic_particle_ids'
        INQUIRE(file=filename_id,exist=read_ids)
@@ -409,16 +409,16 @@ contains
              if(idim==2)filename=TRIM(initfile(ilevel))//'/ic_velcy'
              if(idim==3)filename=TRIM(initfile(ilevel))//'/ic_velcz'
 
-          !BiP   if(idim==1)filename2=TRIM(initfile(ilevel))//'/ic_velcx2' !velocity of antidark matter
-          !BiP   if(idim==2)filename2=TRIM(initfile(ilevel))//'/ic_velcy2' !velocity of antidark matter
-          !BiP   if(idim==3)filename2=TRIM(initfile(ilevel))//'/ic_velcz2' !velocity of antidark matter
+          !BiP   if(idim==1)filename2=TRIM(initfile(ilevel))//'/ic_velcx2' !velocity of second species
+          !BiP   if(idim==2)filename2=TRIM(initfile(ilevel))//'/ic_velcy2' !velocity of second species
+          !BiP   if(idim==3)filename2=TRIM(initfile(ilevel))//'/ic_velcz2' !velocity of second species
 
 
              if(idim==1)filename_x=TRIM(initfile(ilevel))//'/ic_poscx'
              if(idim==2)filename_x=TRIM(initfile(ilevel))//'/ic_poscy'
              if(idim==3)filename_x=TRIM(initfile(ilevel))//'/ic_poscz'
 
-             if(idim==1)filename_x2=TRIM(initfile(ilevel))//'/mass' !BiP For the specific case of Dirac-Milne. File of "mask" for the repartition of the two species (negative and positive mass). dubbed thereafter the "mass file"
+             if(idim==1)filename_x2=TRIM(initfile(ilevel))//'/mask' !BiP For the specific case of Dirac-Milne. File of "mask" for the repartition of the two species (negative and positive mass). dubbed thereafter the "mask file"
 
              INQUIRE(file=filename_x,exist=ok)
              if(.not.ok)then
@@ -471,7 +471,7 @@ contains
                 open(10,file=filename,form='unformatted')
                 rewind 10
                 read(10) ! skip first line
-          !      open(11,file=filename2,form='unformatted') ! BiP file of the antidark matter
+          !      open(11,file=filename2,form='unformatted') ! BiP file of the second species
           !      rewind 11
           !      read(11) ! skip first line
              end if
@@ -507,7 +507,7 @@ contains
                    open(10,file=filename_x,form='unformatted')
                    rewind 10
                    read(10) ! skip first line
-                   if(idim==1)open(11,file=filename_x2,form='unformatted') !BiP reading of the mass file
+                   if(idim==1)open(11,file=filename_x2,form='unformatted') !BiP reading of the mask file
                    if(idim==1)rewind 11
                    if(idim==1)read(11) ! skip first line
                 end if
@@ -529,7 +529,7 @@ contains
                       if(i3.ge.i3_min.and.i3.le.i3_max)then
                          init_array_x(i1_min:i1_max,i2_min:i2_max,i3) = &
                               & init_plane_x(i1_min:i1_max,i2_min:i2_max)
-                         if(idim==1)init_array_x2(i1_min:i1_max,i2_min:i2_max,i3) = &   !BiP mass file
+                         if(idim==1)init_array_x2(i1_min:i1_max,i2_min:i2_max,i3) = &   !BiP mask file
                               & init_plane_x2(i1_min:i1_max,i2_min:i2_max)
                       end if
                    endif

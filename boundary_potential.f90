@@ -2,10 +2,6 @@
 !################################################################
 !################################################################
 !################################################################
-  !------------------------------------------------------------------
-  ! 23/01/2020
-  ! BiP : I modify the routines
-  !------------------------------------------------------------------
 subroutine make_boundary_force(ilevel)
   use amr_commons
   use poisson_commons
@@ -127,7 +123,7 @@ subroutine make_boundary_force(ilevel)
               do ivar=1,ndim
                  do i=1,ngrid
                     ff(i,ivar)=f(ind_cell_ref(i),ivar)
-		    ff2(i,ivar)=f_m(ind_cell_ref(i),ivar)
+		    ff2(i,ivar)=f_m(ind_cell_ref(i),ivar) !BiP
                  end do
               end do
               ! Scatter to boundary region
@@ -135,7 +131,7 @@ subroutine make_boundary_force(ilevel)
                  switch=gs(ivar)
                  do i=1,ngrid
                     f(ind_cell(i),ivar)=ff(i,ivar)*switch
-                    f_m(ind_cell(i),ivar)=ff2(i,ivar)*switch
+                    f_m(ind_cell(i),ivar)=ff2(i,ivar)*switch !BiP
                  end do
               end do
 
@@ -157,13 +153,13 @@ subroutine make_boundary_force(ilevel)
               end do
 
               call gravana(xx,ff,dx_loc,ngrid)
-              call gravana(xx,ff2,dx_loc,ngrid)
+              call gravana(xx,ff2,dx_loc,ngrid) !BiP
 
               ! Scatter variables
               do ivar=1,ndim
                  do i=1,ngrid
                     f(ind_cell(i),ivar)=ff(i,ivar)
-                    f_m(ind_cell(i),ivar)=ff2(i,ivar)
+                    f_m(ind_cell(i),ivar)=ff2(i,ivar) !BiP
                  end do
               end do
 

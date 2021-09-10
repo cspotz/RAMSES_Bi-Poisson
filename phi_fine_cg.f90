@@ -66,7 +66,8 @@ subroutine phi_fine_cg(ilevel,icount)
      iskip=ncoarse+(ind-1)*ngridmax
      do i=1,active(ilevel)%ngrid
         idx=active(ilevel)%igrid(i)+iskip
-        rhs_norm=rhs_norm+fact2*(rho(idx)-0*rho_tot-(rho_m(idx)-0*rho_tot))*(rho(idx)-0*rho_tot-(rho_m(idx)-0*rho_tot)) !BiP : Poisson equation gets modified. Set "by hand" rho_tot=0.
+        rhs_norm=rhs_norm+fact2*(rho(idx)-rho_m(idx))*(rho(idx)-rho_m(idx)) !BiP : Poisson equation gets modified. Set "by hand" rho_tot=0.
+!        rhs_norm=rhs_norm+fact2*(rho(idx)-rho_tot)
      end do
   end do
   ! Compute global norms
@@ -319,6 +320,7 @@ subroutine cmp_residual_cg(ilevel,icount)
         end do
         do i=1,ngrid
            residu(i)=residu(i)+fact*(rho(ind_cell(i))-0*rho_tot-(rho_m(ind_cell(i))-0*rho_tot)) !BiP. Set by hand rho_tot=0
+!          residu(i)+fact*(rho(ind_cell(i))-rho_tot)
         end do
 
         ! Store results in f(i,1)
@@ -713,7 +715,8 @@ subroutine phi_m_fine_cg(ilevel,icount)
      iskip=ncoarse+(ind-1)*ngridmax
      do i=1,active(ilevel)%ngrid
         idx=active(ilevel)%igrid(i)+iskip
-        rhs_norm=rhs_norm+fact2*(rho(idx)-0*rho_tot+(rho_m(idx)-0*rho_tot))*(rho(idx)-0*rho_tot+(rho_m(idx)-0*rho_tot)) ! BiP Modification of Poisson equation here. Also positive mass contributes. 
+        rhs_norm=rhs_norm+fact2*(rho(idx)+rho_m(idx))*(rho(idx)+rho_m(idx)) ! BiP Modification of Poisson equation here. Also second species contributes.
+!       rhs_norm=rhs_norm+fact2*(rho(idx)-rho_tot) 
      end do
   end do
   ! Compute global norms
@@ -969,7 +972,8 @@ subroutine cmp_residual_cg_m(ilevel,icount)
            end do
         end do
         do i=1,ngrid
-           residu(i)=residu(i)-fact*(rho_m(ind_cell(i))-0*rho_tot)-fact*(rho(ind_cell(i))-0*rho_tot) !BiP negtive rho, the residutes get modified due to modified Poisson equation.
+           residu(i)=residu(i)-fact*(rho_m(ind_cell(i)))-fact*(rho(ind_cell(i))) !BiP second rho, the residutes get modified due to modified Poisson equation.
+!          residu(i)+fact*(rho(ind_cell(i))-rho_tot)
         end do
 
         ! Store results in f(i,1)
@@ -979,7 +983,7 @@ subroutine cmp_residual_cg_m(ilevel,icount)
 
         ! Store results in f(i,2)
         do i=1,ngrid
-           f_m(ind_cell(i),2)=residu(i)
+           f_m(ind_cell(i),2)=residu(i) !BiP
         end do
 
      end do

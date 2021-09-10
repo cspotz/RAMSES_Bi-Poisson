@@ -100,7 +100,7 @@ subroutine rho_fine(ilevel,icount)
                 & rho_top(active(ilevel)%igrid(i)+iskip)
            rho_m_top(active(ilevel)%igrid(i)+iskip)=rho_m_top(father(active(ilevel)%igrid(i))) !BiP
            rho_m(active(ilevel)%igrid(i)+iskip)=rho_m(active(ilevel)%igrid(i)+iskip)+ &
-                & rho_m_top(active(ilevel)%igrid(i)+iskip)
+                & rho_m_top(active(ilevel)%igrid(i)+iskip) !BiP
         end do
      end do
   endif
@@ -146,7 +146,7 @@ subroutine rho_fine(ilevel,icount)
            rho(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0
            phi(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0
            rho_m(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0 !BiP
-           phi_m(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0
+           phi_m(reception(icpu,ilevel)%igrid(i)+iskip)=0.0D0 !BiP
         end do
         if(ilevel==cic_levelmax)then
            do i=1,reception(icpu,ilevel)%ngrid
@@ -662,7 +662,7 @@ subroutine cic_amr(ind_cell,ind_part,ind_grid_part,x0,ng,np,ilevel)
         do j=1,np
            if(ok(j))then
 		if(typep(ind_part(j))%tag==1)then
-          	    phi_m(indp(j,ind))=phi_m(indp(j,ind))+vol2(j)
+          	    phi_m(indp(j,ind))=phi_m(indp(j,ind))+vol2(j) !BiP
 		else if(typep(ind_part(j))%tag==0)then
           	    phi(indp(j,ind))=phi(indp(j,ind))+vol2(j)
 		end if
@@ -672,7 +672,7 @@ subroutine cic_amr(ind_cell,ind_part,ind_grid_part,x0,ng,np,ilevel)
         do j=1,np
            if ( ok(j) .and. is_not_DM(fam(j)) ) then
 		if(typep(ind_part(j))%tag==1)then
-          	    phi_m(indp(j,ind))=phi_m(indp(j,ind))+vol2(j)
+          	    phi_m(indp(j,ind))=phi_m(indp(j,ind))+vol2(j) !BiP
 		else if(typep(ind_part(j))%tag==0)then
           	    phi(indp(j,ind))=phi(indp(j,ind))+vol2(j)
 		end if

@@ -870,7 +870,7 @@ subroutine make_grid_fine(ind_grid,ind_cell,ind,ilevel,nn,ibound,boundary_region
               phi(iskip+ind_grid_son(i))=phi(ind_fathers(i,0))
               phi_old(iskip+ind_grid_son(i))=phi_old(ind_fathers(i,0))
               phi_m(iskip+ind_grid_son(i))=phi_m(ind_fathers(i,0)) !BiP
-              phi_m_old(iskip+ind_grid_son(i))=phi_m_old(ind_fathers(i,0))
+              phi_m_old(iskip+ind_grid_son(i))=phi_m_old(ind_fathers(i,0)) ! BiP
            end do
         end do
      end if
@@ -1033,9 +1033,9 @@ subroutine kill_grid(ind_cell,ilevel,nn,ibound,boundary_region)
            rho(ind_cell_son(i))=0.0D0
            phi(ind_cell_son(i))=0.0D0
            phi_old(ind_cell_son(i))=0.0D0
-           rho_m(ind_cell_son(i))=0.0D0 !negative mass
-           phi_m(ind_cell_son(i))=0.0D0
-           phi_m_old(ind_cell_son(i))=0.0D0
+           rho_m(ind_cell_son(i))=0.0D0 !BiP
+           phi_m(ind_cell_son(i))=0.0D0 !BiP
+           phi_m_old(ind_cell_son(i))=0.0D0 !BiP
         end do
         do idim=1,ndim
            do i=1,nn
