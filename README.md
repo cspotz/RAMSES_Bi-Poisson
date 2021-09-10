@@ -7,7 +7,7 @@ Instead of the standard Poisson equation <img src="https://latex.codecogs.com/sv
 
 This can be achieved by changing line 69 of ``phi_fine_cg.f90`` and the rest of this file accordingly.
 
-In the main repository, the two species are both treated as particles and differentiated with their tag (0 and 1). In the folder hydro, one species is considered in the particle sector of RAMSES while the second is treated in the hydro sector.
+In the main repository, the two species are both treated as particles and differentiated with their tag (0 and 1). In the folder /hydro, one species is considered in the particle sector of RAMSES while the second is treated in the hydro sector.
 
 For the specific case of the "Dirac-Milne" universe, we studied the following equations:
 
